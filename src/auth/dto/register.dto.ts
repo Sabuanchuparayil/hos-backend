@@ -6,4 +6,3 @@ export class RegisterDto {
   password: string;
   role?: Role;
 }
-

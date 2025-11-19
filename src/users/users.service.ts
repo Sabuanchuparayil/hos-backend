@@ -1,48 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersRepository } from './users.repository';
+import * as bcrypt from 'bcryptjs';
 import { Role } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private repo: UsersRepository) {}
 
-  async create(data: CreateUserDto) {
-    return this.prisma.user.create({
-      data: {
-        email: data.email,
-        password: data.password,
-        name: data.name,
-        role: (data.role as Role) || Role.CUSTOMER,
-      },
-    });
+  async create(data: any) {
+    data.password = await bcrypt.hash(data.password, 10);
+    data.role = data.role || Role.USER;
+    return this.repo.create(data);
   }
 
-  async findAll() {
-    return this.prisma.user.findMany();
+  findAll() {
+    return this.repo.findAll();
   }
 
-  async findOne(id: string) {
-    return this.prisma.user.findUnique({
-      where: { id: Number(id) },   // FIXED
-    });
+  findOne(id: string) {
+    return this.repo.findOne(Number(id));
   }
 
-  async update(id: string, data: UpdateUserDto) {
-    return this.prisma.user.update({
-      where: { id: Number(id) },   // FIXED
-      data: {
-        ...data,
-        role: data.role ? (data.role as Role) : undefined,
-      },
-    });
+  async update(id: string, data: any) {
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 10);
+    }
+    return this.repo.update(Number(id), data);
   }
 
-  async remove(id: string) {
-    return this.prisma.user.delete({
-      where: { id: Number(id) },   // FIXED
-    });
+  remove(id: string) {
+    return this.repo.remove(Number(id));
   }
 }
-

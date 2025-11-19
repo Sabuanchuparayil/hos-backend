@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
-import { Role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -12,34 +12,28 @@ export class AuthService {
     private jwt: JwtService,
   ) {}
 
-  // REGISTER USER
   async register(dto: RegisterDto) {
     const hashed = await bcrypt.hash(dto.password, 10);
 
     return this.prisma.user.create({
       data: {
+        name: dto.name,
         email: dto.email,
         password: hashed,
-        name: dto.name,
         role: dto.role || Role.CUSTOMER,
       },
     });
   }
 
-  // LOGIN USER
-  async login(dto: RegisterDto) {
+  async login(dto: any) {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+    if (!user) throw new Error('Invalid credentials');
 
     const valid = await bcrypt.compare(dto.password, user.password);
-    if (!valid) {
-      throw new Error('Invalid password');
-    }
+    if (!valid) throw new Error('Invalid credentials');
 
     const accessToken = this.jwt.sign(
       { id: user.id, email: user.email, role: user.role },
@@ -51,14 +45,9 @@ export class AuthService {
       { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' },
     );
 
-    return {
-      user,
-      accessToken,
-      refreshToken,
-    };
+    return { user, accessToken, refreshToken };
   }
 
-  // REFRESH TOKEN
   async refresh(token: string) {
     const payload = this.jwt.verify(token, {
       secret: process.env.JWT_REFRESH_SECRET,
@@ -68,9 +57,7 @@ export class AuthService {
       where: { id: payload.id },
     });
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+    if (!user) throw new Error('Invalid refresh');
 
     const accessToken = this.jwt.sign(
       { id: user.id, email: user.email, role: user.role },
@@ -80,4 +67,3 @@ export class AuthService {
     return { accessToken };
   }
 }
-

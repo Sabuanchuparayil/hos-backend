@@ -6,4 +6,3 @@ export class CreateUserDto {
   password: string;
   role?: Role;
 }
-

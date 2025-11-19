@@ -7,7 +7,7 @@ export class RefreshJwtStrategy extends PassportStrategy(Strategy, 'refresh') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_REFRESH_SECRET || 'refresh123',
+      secretOrKey: process.env.JWT_REFRESH_SECRET || 'defaultrefreshsecret',
     });
   }
 
@@ -15,4 +15,3 @@ export class RefreshJwtStrategy extends PassportStrategy(Strategy, 'refresh') {
     return payload;
   }
 }
-
