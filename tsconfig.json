@@ -2,20 +2,24 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES2019",
-    "lib": ["ES2019", "ES2020.Promise", "ES2020.AsyncIterable"],
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "strictNullChecks": false,
-    "sourceMap": true,
+    "lib": ["ES2019"],
     "rootDir": "./src",
     "outDir": "./dist",
+
     "baseUrl": "./",
+
+    "sourceMap": true,
+    "declaration": true,
+    "removeComments": true,
     "incremental": true,
-    "skipLibCheck": true
+
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false
   },
-  "include": ["src/**/*", "prisma/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
-

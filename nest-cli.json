@@ -1,7 +1,15 @@
 {
-  "compilerOptions": {
-    "deleteOutDir": true
-  },
+  "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "entryFile": "main"
+  "entryFile": "main",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "assets": [
+      {
+        "include": "**/*.hbs",
+        "outDir": "dist"
+      }
+    ],
+    "watchAssets": true
+  }
 }

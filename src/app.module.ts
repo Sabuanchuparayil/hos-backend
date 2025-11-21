@@ -1,3 +1,4 @@
+import { PlatformThemesModule } from './platform-themes/platform-themes.module';
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
@@ -14,6 +15,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
+    PlatformThemesModule,
     AuthModule,
     UsersModule,
     SellersModule,
